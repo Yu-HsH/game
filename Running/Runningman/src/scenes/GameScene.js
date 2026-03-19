@@ -10,7 +10,7 @@ export default class GameScene extends Phaser.Scene {
 
     preload(){
         
-        this.load.image('sky','./assets/sky.png');
+        this.load.image('sky','./assets/space.png');
         this.load.image('ground','https://labs.phaser.io/assets/sprites/platform.png');
         this.load.image('obstacle','https://labs.phaser.io/assets/sprites/block.png');
 
@@ -58,16 +58,28 @@ export default class GameScene extends Phaser.Scene {
     }
 
     update(time, delta){
+        if(this.isGameOver)return;
 
         this.player.update();
         this.platformManager.update();
         this.obstacleManager.update(this.platformManager);
+        //낙사 체크
+        if(this.player.sprite.y>700){
+            this.gameOver();
+        }
+
          // ✅ 점수 증가
         this.score += delta / 1000;
         this.scoreText.setText('Score:' + Math.floor(this.score));
+
+        
+        
     }
 
     gameOver(){
+        if(this.isGameOver) return;
+
+        this.isGameOver = true;
 
         this.physics.pause();
         this.add.text(300,250,'GAME OVER',{fontSize:'40px'});

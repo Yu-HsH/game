@@ -5,15 +5,15 @@ export default class Player {
         this.scene = scene;
 
         this.sprite = scene.physics.add.sprite(200,400,'running2');
+        
+        this.normalSize = { w: 120, h: 120 };
+        this.slideSize = { w: 120, h: 80 };
 
-        this.normalSize = { w: 60, h: 90 };
-        this.slideSize = { w: 80, h: 50 };
-
-        this.normalOffset = { x: 20, y: 38 };
-        this.slideOffset = { x: 10, y: 30 };
+        this.normalOffset = { x: 0, y: 0 };
+        this.slideOffset = { x: 0, y: 0 };
 
         this.sprite.setOrigin(0.5,1);
-
+        this.sprite.setScale(0.5)
         this.sprite.body.setSize(this.normalSize.w, this.normalSize.h);
         this.sprite.body.setOffset(this.normalOffset.x, this.normalOffset.y);
         
@@ -28,7 +28,7 @@ export default class Player {
 
         this.createAnimations();
             
-
+        this.hasPlayedDoubleJump = false;
     }
 
     createAnimations(){
@@ -85,12 +85,18 @@ export default class Player {
 
             this.sprite.setVelocityY(-500);
             this.jumpCount++;
+                // ✅ jumpCount 기반 double jump
+            if(this.jumpCount === 2){
+                this.isDoubleJump = true;
+                this.hasPlayedDoubleJump = false;
+            }
         }
 
         // 착지
         if(body.blocked.down && body.velocity.y >= 0){
             this.jumpCount = 0;
             this.isDoubleJump = false;
+            this.hasPlayedDoubleJump = false;
         }
 
         // 슬라이드 로직 수정
